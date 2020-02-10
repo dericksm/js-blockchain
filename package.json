@@ -1,0 +1,29 @@
+{
+  "name": "js-blockchain",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "rimraf ./build && tsc",
+    "start:dev": "nodemon",
+    "start": "npm run build && node build/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dericksm/js-blockchain.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dericksm/js-blockchain/issues"
+  },
+  "homepage": "https://github.com/dericksm/js-blockchain#readme",
+  "dependencies": {
+    "crypto-js": "^3.1.9-1"
+  },
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "^13.7.0",
+    "typescript": "^3.7.5"
+  }
+}
