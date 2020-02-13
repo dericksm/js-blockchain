@@ -1,20 +1,18 @@
 import { Blockchain } from "./model/Blockchain"
 import { Block } from "./model/Block"
-import { Transaction } from "./model/Transaction"
+import { Transaction } from './model/Transaction';
+const Elliptic = require("../node_modules/elliptic").ec
+const ec = new Elliptic('secp256k1')
+
+
+const myKey = ec.keyFromPrivate('3566b8e4398c3490c1436b15ea58700f5f5378f997ce7033c5e7df3f36314d6b')
+const myWalletAddress = myKey.getPublic("hex")
 
 let blockchain = new Blockchain()
-blockchain.addBlock(new Block(new Date(), { amount: 4}))
-blockchain.addBlock(new Block(new Date(), { amount: 10}))
 
-// console.log(blockchain.isChainVadid())
+const tx1 = new Transaction(myWalletAddress, "pubkey", 10)
+tx1.signTransaction(myKey)
+blockchain.addTransaction(tx1)
 
-
-blockchain.createTransaction(new Transaction("addr1", "addr2", 100))
-blockchain.createTransaction(new Transaction("addr2", "addr1", 25))
-blockchain.createTransaction(new Transaction("addr3", "addr1", 25))
-
-console.log(JSON.stringify(blockchain))
-blockchain.minePendingTransaction("addr1")
-blockchain.minePendingTransaction("addr1")
-
-console.log(blockchain.getBalanceOfAddress("addr1"))
+blockchain.minePendingTransaction(myWalletAddress)
+console.log(blockchain.getBalanceOfAddress(myWalletAddress))

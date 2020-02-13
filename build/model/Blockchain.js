@@ -5,7 +5,7 @@ var Transaction_1 = require("./Transaction");
 var Blockchain = /** @class */ (function () {
     function Blockchain() {
         this.chain = [this.createGenesisBlock()];
-        this.difficulty = 1;
+        this.difficulty = 2;
         this.minningReward = 100;
         this.pendingTransactions = [];
     }
@@ -17,19 +17,21 @@ var Blockchain = /** @class */ (function () {
     Blockchain.prototype.getLatestBlock = function () {
         return this.chain[this.chain.length - 1];
     };
-    Blockchain.prototype.addBlock = function (newBlock) {
-        newBlock.previousHash = this.getLatestBlock().hash;
-        newBlock.mineBlock(this.difficulty);
-        this.chain.push(newBlock);
-    };
     Blockchain.prototype.minePendingTransaction = function (minningAddress) {
-        var block = new Block_1.Block(new Date(), this.pendingTransactions);
+        var rewardTX = new Transaction_1.Transaction(null, minningAddress, this.minningReward);
+        this.pendingTransactions.push(rewardTX);
+        var block = new Block_1.Block(new Date(), this.pendingTransactions, this.getLatestBlock().hash);
         block.mineBlock(this.difficulty);
-        this.pendingTransactions = [
-            new Transaction_1.Transaction(null, minningAddress, this.minningReward)
-        ];
+        this.chain.push(block);
+        this.pendingTransactions = [];
     };
-    Blockchain.prototype.createTransaction = function (transaction) {
+    Blockchain.prototype.addTransaction = function (transaction) {
+        if (!transaction.fromAddress || !transaction.toAddress) {
+            throw new Error("Transaction doesn't has any addresses");
+        }
+        if (!transaction.isValid) {
+            throw new Error("Cannot add a invalid transaction to the chain");
+        }
         this.pendingTransactions.push(transaction);
     };
     Blockchain.prototype.getBalanceOfAddress = function (address) {
@@ -52,6 +54,9 @@ var Blockchain = /** @class */ (function () {
         for (var index = 1; index < this.chain.length; index++) {
             var currentBlock = this.chain[index];
             var previousBlock = this.chain[index - 1];
+            if (!currentBlock.hasValidTransactions()) {
+                return false;
+            }
             if (currentBlock.hash != currentBlock.calculateHash()) {
                 return false;
             }

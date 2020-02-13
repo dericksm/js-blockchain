@@ -1,18 +1,20 @@
+import { Transaction } from './Transaction';
 const SHA256 = require('crypto-js/sha256')
 
 export class Block {
 
     public timestamp: Date
-    public transactions: any
+    public transactions: Transaction[] = []
     public previousHash: any
     public hash: String
     public nonce: number = 0
 
-    constructor(timestamp: Date, transactions: any, previousHash = '') {
+    constructor(timestamp: Date, transactions: any, previousHash: any) {
         this.timestamp = timestamp
         this.transactions = transactions
         this.previousHash = previousHash
         this.hash = this.calculateHash()
+        this.nonce = 0
     }
 
     calculateHash() {
@@ -25,5 +27,14 @@ export class Block {
             this.hash = this.calculateHash()
         }
         console.log("Block mined: " + this.hash)
+    }
+
+    hasValidTransactions(){
+        for(const tx of this.transactions) {
+            if(tx.isValid()) {
+                return false
+            }
+        }
+        return true
     }
 }
