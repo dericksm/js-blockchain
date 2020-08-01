@@ -20,7 +20,7 @@
   "homepage": "https://github.com/dericksm/js-blockchain#readme",
   "dependencies": {
     "crypto-js": "^3.1.9-1",
-    "elliptic": "^6.5.2"
+    "elliptic": "^6.5.3"
   },
   "type": "module",
   "devDependencies": {
